@@ -8,8 +8,8 @@ from aws_cdk.aws_lambda_python_alpha import PythonFunction, PythonLayerVersion
 from constructs import Construct
 import os
 
-from thumbnail_switch_stack import ThumbnailSwitchStack
-from thumbnail_download_stack import ThumbnailDownloadStack
+from click_pro.thumbnail_switch_stack import ThumbnailSwitchStack
+from click_pro.thumbnail_download_stack import ThumbnailDownloadStack
 
 class ClickProStack(Stack):
 
