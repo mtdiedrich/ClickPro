@@ -5,6 +5,7 @@ __pycache__
 .venv
 *.egg-info
 .env
+venv
 
 # CDK asset staging directory
 .cdk.staging
@@ -12,3 +13,10 @@ cdk.out
 
 # PyCharm
 .idea/
+
+# Local use
+lambda/create_deployment_package.py
+lambda/venv/
+lambda/python/
+lambda/package/
+AWSCLIV2.pkg
