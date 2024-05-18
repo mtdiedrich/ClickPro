@@ -18,22 +18,20 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Set up Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
       - name: Install dependencies
         run: |
-          python -m venv .env
-          . .env/bin/activate
           pip install -r requirements.txt
           npm install -g aws-cdk
 
@@ -45,6 +43,8 @@ jobs:
 
       - name: Bootstrap CDK
         run: cdk bootstrap
+        env:
+          VIDEO_ID: ${{ github.event.inputs.videoID }}
 
       - name: CDK Synth
         run: cdk synth
