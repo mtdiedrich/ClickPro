@@ -16,7 +16,18 @@ class WebsiteHostingStack(Stack):
             website_index_document="index.html",
             website_error_document="error.html",
             public_read_access=True,
-            removal_policy=cdk.RemovalPolicy.DESTROY
+            removal_policy=cdk.RemovalPolicy.DESTROY,
+            block_public_access=s3.BlockPublicAccess.BLOCK_ACLS
+        )
+
+        # Define bucket policy to allow public read access
+        website_bucket.add_to_resource_policy(
+            s3.BucketPolicyStatement(
+                effect=s3.BucketPolicyEffect.ALLOW,
+                principals=[s3.ArnPrincipal('*')],
+                actions=["s3:GetObject"],
+                resources=[f"{website_bucket.bucket_arn}/*"]
+            )
         )
 
         # Deploy website contents to S3 bucket
