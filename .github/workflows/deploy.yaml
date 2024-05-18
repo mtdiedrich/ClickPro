@@ -41,7 +41,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
           aws-region: us-east-2
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/gh-actions-runner
+          role-to-assume: arn:aws:iam::961181693216:role/gh-actions-runner
 
       - name: Bootstrap CDK
         run: cdk bootstrap

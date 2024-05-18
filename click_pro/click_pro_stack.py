@@ -8,6 +8,7 @@ from aws_cdk import (
 from constructs import Construct
 import os
 
+
 class ClickProStack(Stack):
 
     def __init__(self, scope: Construct, id: str, **kwargs) -> None:
@@ -41,9 +42,9 @@ class ClickProStack(Stack):
 
         # Define API Gateway
         api = apigateway.RestApi(self, "thumbnail-switcher-api",
-            rest_api_name="Thumbnail Switcher Service",
-            description="This service switches YouTube thumbnails."
-        )
+                                 rest_api_name="Thumbnail Switcher Service",
+                                 description="This service switches YouTube thumbnails."
+                                 )
 
         thumbnail_resource = api.root.add_resource("thumbnail")
         thumbnail_resource.add_method("POST", apigateway.LambdaIntegration(thumbnail_switcher_lambda),
