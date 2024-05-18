@@ -22,7 +22,7 @@ class ClickProStack(Stack):
         # Define Lambda layer for dependencies
         dependencies_layer = PythonLayerVersion(
             self, "DependenciesLayer",
-            entry="lambda/layers/dependencies",
+            entry="lambda/dependencies",
             compatible_runtimes=[lambda_.Runtime.PYTHON_3_9]
         )
 
