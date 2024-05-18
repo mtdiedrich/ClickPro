@@ -31,7 +31,7 @@ class ClickProStack(Stack):
             self, "ThumbnailSwitcherFunction",
             runtime=lambda_.Runtime.PYTHON_3_9,
             handler="index.lambda_handler",
-            code=lambda_.Code.from_asset("lambda"),
+            code=lambda_.Code.from_asset("lambda/function"),
             layers=[dependencies_layer],
             environment={
                 "S3_BUCKET_NAME": bucket.bucket_name,
