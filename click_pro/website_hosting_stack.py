@@ -32,14 +32,6 @@ class WebsiteHostingStack(Stack):
             )
         )
 
-        # Deploy website contents to S3 bucket
-        s3deploy.BucketDeployment(self, "DeployWebsite",
-            sources=[s3deploy.Source.asset("./website")],
-            destination_bucket=website_bucket,
-            bundling=cdk.BundlingOptions(
-                image=lambda_.Runtime.PYTHON_3_9.bundling_docker_image,
-            )
-        )
 
         # Output the website URL
         cdk.CfnOutput(self, "WebsiteURL",
