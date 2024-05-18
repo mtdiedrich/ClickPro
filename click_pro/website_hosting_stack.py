@@ -32,6 +32,12 @@ class WebsiteHostingStack(Stack):
             )
         )
 
+        # Deploy the website files to the S3 bucket
+        s3deploy.BucketDeployment(self, "DeployWebsite",
+            sources=[s3deploy.Source.asset("website")],
+            destination_bucket=website_bucket
+        )
+
 
         # Output the website URL
         cdk.CfnOutput(self, "WebsiteURL",
