@@ -10,6 +10,7 @@ import os
 
 from click_pro.thumbnail_switch_stack import ThumbnailSwitchStack
 from click_pro.thumbnail_download_stack import ThumbnailDownloadStack
+from click_pro.website_hosting_stack import WebsiteHostingStack
 
 class ClickProStack(Stack):
 
@@ -25,3 +26,4 @@ class ClickProStack(Stack):
 
         ThumbnailDownloadStack(self, "ThumbnailDownloadStack", dependencies_layer)
         ThumbnailSwitchStack(self, "ThumbnailSwitchStack", dependencies_layer)
+        WebsiteHostingStack(self, "WebsiteHostingStack")

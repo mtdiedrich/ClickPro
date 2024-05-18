@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Thumbnail</title>
+</head>
+<body>
+    <h1>Upload Thumbnail for YouTube Video</h1>
+    <form id="upload-form">
+        <label for="video-id">YouTube Video ID:</label>
+        <input type="text" id="video-id" name="video-id" required>
+        <br><br>
+        <label for="thumbnail">Thumbnail Image:</label>
+        <input type="file" id="thumbnail" name="thumbnail" accept="image/*" required>
+        <br><br>
+        <button type="submit">Upload and Update Thumbnail</button>
+    </form>
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const videoId = document.getElementById('video-id').value;
+            const fileInput = document.getElementById('thumbnail');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file!');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('video-id', videoId);
+            formData.append('thumbnail', file);
+
+            try {
+                const response = await fetch('<API_GATEWAY_URL>/upload-thumbnail', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to upload thumbnail.');
+                }
+
+                const result = await response.json();
+                alert(result.message);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to upload thumbnail.');
+            }
+        });
+    </script>
+</body>
+</html>
