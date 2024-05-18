@@ -2,7 +2,9 @@ from aws_cdk import (
     aws_s3 as s3,
     aws_s3_deployment as s3deploy,
     aws_iam as iam,
+    aws_lambda as lambda_,
     Stack,
+    Duration,
 )
 from constructs import Construct
 import aws_cdk as cdk
@@ -34,11 +36,14 @@ class WebsiteHostingStack(Stack):
         s3deploy.BucketDeployment(self, "DeployWebsite",
             sources=[s3deploy.Source.asset("./website")],
             destination_bucket=website_bucket,
+            bundling=cdk.BundlingOptions(
+                image=lambda_.Runtime.PYTHON_3_9.bundling_docker_image,
+            )
         )
 
-        # # Output the website URL
-        # cdk.CfnOutput(self, "WebsiteURL",
-        #     value=website_bucket.bucket_website_url
-        # )
+        # Output the website URL
+        cdk.CfnOutput(self, "WebsiteURL",
+            value=website_bucket.bucket_website_url
+        )
 
         self.website_bucket = website_bucket
