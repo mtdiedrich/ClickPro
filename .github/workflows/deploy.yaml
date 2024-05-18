@@ -18,28 +18,34 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v3
         with:
           python-version: "3.11"
 
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: 20
 
       - name: Install dependencies
         run: |
+          python -m venv .env
+          . .env/bin/activate
           pip install -r requirements.txt
           npm install -g aws-cdk
 
+      - name: Install Lambda dependencies
+        run: |
+          pip install -r lambda/requirements.txt -t lambda/dependencies/
+
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4.0.2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-2
-          role-to-assume: arn:aws:iam::961181693216:role/gh-actions-runner
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/gh-actions-runner
 
       - name: Bootstrap CDK
         run: cdk bootstrap

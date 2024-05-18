@@ -4,7 +4,7 @@ from aws_cdk import (
     aws_s3 as s3,
     Stack,
 )
-from aws_cdk.aws_lambda_python_alpha import PythonFunction
+from aws_cdk.aws_lambda_python_alpha import PythonLayerVersion, PythonFunction
 from constructs import Construct
 import os
 
@@ -19,13 +19,27 @@ class ClickProStack(Stack):
         # Create S3 bucket for credentials
         bucket = s3.Bucket(self, "ephemeral-z90d7fs9dfwq")
 
-        # Define Lambda function with automatic bundling
-        thumbnail_switcher_lambda = PythonFunction(
+        # Define Lambda layer for dependencies
+        dependencies_layer = PythonLayerVersion(
+            self, "DependenciesLayer",
+            entry="lambda/dependencies",
+            compatible_runtimes=[lambda_.Runtime.PYTHON_3_9]
+        )
+
+        # Define Lambda function layer for function code
+        function_layer = PythonLayerVersion(
+            self, "FunctionLayer",
+            entry="lambda/function",
+            compatible_runtimes=[lambda_.Runtime.PYTHON_3_9]
+        )
+
+        # Define Lambda function
+        thumbnail_switcher_lambda = lambda_.Function(
             self, "ThumbnailSwitcherFunction",
-            entry="lambda",  # The directory where your handler.py and requirements.txt are
             runtime=lambda_.Runtime.PYTHON_3_9,
-            index="handler.py",  # The file containing the handler function
-            handler="lambda_handler",
+            handler="index.lambda_handler",
+            code=lambda_.Code.from_asset("lambda"),
+            layers=[dependencies_layer, function_layer],
             environment={
                 "S3_BUCKET_NAME": bucket.bucket_name,
                 "S3_OBJECT_KEY": "cred.json",
