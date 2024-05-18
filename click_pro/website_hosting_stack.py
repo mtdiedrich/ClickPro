@@ -20,15 +20,15 @@ class WebsiteHostingStack(Stack):
             removal_policy=cdk.RemovalPolicy.DESTROY,
             block_public_access=s3.BlockPublicAccess.BLOCK_ACLS
         )
-        #
-        # # Define bucket policy to allow public read access
-        # website_bucket.add_to_resource_policy(
-        #     iam.PolicyStatement(
-        #         actions=["s3:GetObject"],
-        #         resources=[f"{website_bucket.bucket_arn}/*"],
-        #         principals=[iam.AnyPrincipal()]
-        #     )
-        # )
+
+        # Define bucket policy to allow public read access
+        website_bucket.add_to_resource_policy(
+            iam.PolicyStatement(
+                actions=["s3:GetObject"],
+                resources=[f"{website_bucket.bucket_arn}/*"],
+                principals=[iam.AnyPrincipal()]
+            )
+        )
         #
         # # Deploy website contents to S3 bucket
         # s3deploy.BucketDeployment(self, "DeployWebsite",
