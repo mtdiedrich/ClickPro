@@ -48,7 +48,7 @@ jobs:
           cp handler.py ./package
           cd package
           zip -r ../lambda_package.zip .
-          cd ..
+          cd ../..
           source .env/bin/activate
 
       - name: Configure AWS Credentials
