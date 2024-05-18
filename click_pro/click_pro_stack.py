@@ -4,7 +4,7 @@ from aws_cdk import (
     aws_s3 as s3,
     Stack,
 )
-from aws_cdk.aws_lambda_python_alpha import PythonLayerVersion, PythonFunction
+from aws_cdk.aws_lambda_python_alpha import PythonLayerVersion
 from constructs import Construct
 import os
 
@@ -22,14 +22,7 @@ class ClickProStack(Stack):
         # Define Lambda layer for dependencies
         dependencies_layer = PythonLayerVersion(
             self, "DependenciesLayer",
-            entry="lambda/dependencies",
-            compatible_runtimes=[lambda_.Runtime.PYTHON_3_9]
-        )
-
-        # Define Lambda function layer for function code
-        function_layer = PythonLayerVersion(
-            self, "FunctionLayer",
-            entry="lambda/function",
+            entry="lambda/layers/dependencies",
             compatible_runtimes=[lambda_.Runtime.PYTHON_3_9]
         )
 
@@ -39,7 +32,7 @@ class ClickProStack(Stack):
             runtime=lambda_.Runtime.PYTHON_3_9,
             handler="index.lambda_handler",
             code=lambda_.Code.from_asset("lambda"),
-            layers=[dependencies_layer, function_layer],
+            layers=[dependencies_layer],
             environment={
                 "S3_BUCKET_NAME": bucket.bucket_name,
                 "S3_OBJECT_KEY": "cred.json",
