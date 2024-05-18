@@ -30,29 +30,25 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Lambda dependencies and package
-        run: |
-          mkdir -p lambda/package
-          pip install --target lambda/package -r lambda/requirements.txt
-          cp lambda/handler.py lambda/package/
-          zip -r lambda/lambda_package.zip lambda/package/*
-
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
           npm install -g aws-cdk
 
+      - name: Install Lambda dependencies
+        run: |
+          pip install -r lambda/dependencies/requirements.txt -t lambda/dependencies/
+
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4.0.2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-2
           role-to-assume: arn:aws:iam::961181693216:role/gh-actions-runner
 
-      - name: Upload Lambda package to S3
-        run: aws s3 cp lambda/lambda_package.zip s3://ephemeral-kjuiykur6/lambda_package.zip
-
       - name: Bootstrap CDK
         run: cdk bootstrap
+        env:
+          VIDEO_ID: ${{ github.event.inputs.videoID }}
 
       - name: CDK Synth
         run: cdk synth
