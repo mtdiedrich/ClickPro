@@ -49,6 +49,7 @@ jobs:
           cd package
           zip -r ../lambda_package.zip .
           cd ..
+          deactivate
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4.0.2
