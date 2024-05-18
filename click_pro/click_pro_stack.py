@@ -1,14 +1,16 @@
 from aws_cdk import (
-    core,
     aws_lambda as lambda_,
     aws_apigateway as apigateway,
     aws_s3 as s3,
-    aws_s3_assets as s3_assets
+    aws_s3_assets as s3_assets,
+    Stack
 )
 
-class ClickProStack(core.Stack):
+from constructs import Construct
 
-    def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
+class ClickProStack(Stack):
+
+    def __init__(self, scope: Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         # Create S3 bucket for credentials
