@@ -4,7 +4,7 @@ from aws_cdk import (
     aws_s3 as s3,
     Stack,
 )
-from aws_cdk.aws_lambda_python_alpha import PythonLayerVersion
+from aws_cdk.aws_lambda_python_alpha import PythonFunction, PythonLayerVersion
 from constructs import Construct
 import os
 
@@ -27,11 +27,12 @@ class ClickProStack(Stack):
         )
 
         # Define Lambda function
-        thumbnail_switcher_lambda = lambda_.Function(
+        thumbnail_switcher_lambda = PythonFunction(
             self, "ThumbnailSwitcherFunction",
+            entry="lambda/function",  # The directory where your handler.py and requirements.txt are
             runtime=lambda_.Runtime.PYTHON_3_9,
-            handler="index.lambda_handler",
-            code=lambda_.Code.from_asset("lambda/function"),
+            index="index.py",  # The file containing the handler function
+            handler="lambda_handler",
             layers=[dependencies_layer],
             environment={
                 "S3_BUCKET_NAME": bucket.bucket_name,
