@@ -30,7 +30,8 @@ jobs:
           npm install -g aws-cdk
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4.0.2
-        aws-region: us-east-2
+        with:
+          aws-region: us-east-2
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
