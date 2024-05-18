@@ -32,12 +32,10 @@ jobs:
 
       - name: Install Lambda dependencies and package
         run: |
-          python -m venv lambda/venv
-          . lambda/venv/bin/activate
+          mkdir -p lambda/package
           pip install --target lambda/package -r lambda/requirements.txt
           cp lambda/handler.py lambda/package/
           zip -r lambda/lambda_package.zip lambda/package/*
-          deactivate
 
       - name: Install dependencies
         run: |
