@@ -6,6 +6,8 @@ from aws_cdk import (
     Stack
 )
 
+import os
+
 from constructs import Construct
 
 class ClickProStack(Stack):
@@ -30,7 +32,7 @@ class ClickProStack(Stack):
             environment={
                 "S3_BUCKET_NAME": bucket.bucket_name,
                 "S3_OBJECT_KEY": "cred.json",
-                "VIDEO_ID": "ZhIUkujgPu0"
+                "VIDEO_ID": os.getenv('VIDEO_ID', 'default_video_id')  # Use the passed environment variable or a default
             }
         )
 

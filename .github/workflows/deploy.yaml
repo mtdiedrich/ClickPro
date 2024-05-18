@@ -1,4 +1,5 @@
 name: Deploy
+
 on:
   workflow_dispatch:
     inputs:
@@ -7,48 +8,63 @@ on:
         required: true
         type: string
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   Deploy:
     runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
     steps:
-      - name: checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
+
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
           python-version: "3.11"
+
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
-          node-version: 18
-      - name: Install Python Dependencies
+          node-version: 20
+
+      - name: Install Lambda dependencies and package
         run: |
-          pip install --upgrade pip
-          pip install wheel
-      - name: Install CDK (Node)
+          mkdir -p lambda/package
+          pip install --target lambda/package -r lambda/requirements.txt
+          cp lambda/handler.py lambda/package/
+          zip -r lambda/lambda_package.zip lambda/package/*
+
+      - name: Install dependencies
         run: |
+          pip install -r requirements.txt
           npm install -g aws-cdk
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
           aws-region: us-east-2
           role-to-assume: arn:aws:iam::961181693216:role/gh-actions-runner
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-      - name: Bootstrap
-        run: |
-          cdk bootstrap
-      - name: Synth
-        run: |
-          cdk synth
-      - name: Diff
-        run: |
-          cdk diff
-      - name: Deploy
-        run: |
-          cdk deploy --require-approval never
+
+      - name: Upload Lambda package to S3
+        run: aws s3 cp lambda/lambda_package.zip s3://ephemeral-kjuiykur6/lambda_package.zip
+
+      - name: Bootstrap CDK
+        run: cdk bootstrap
+
+      - name: CDK Synth
+        run: cdk synth
+        env:
+          VIDEO_ID: ${{ github.event.inputs.videoID }}
+
+      - name: CDK Diff
+        run: cdk diff
+        env:
+          VIDEO_ID: ${{ github.event.inputs.videoID }}
+
+      - name: Deploy CDK stack
+        run: cdk deploy --require-approval never
+        env:
+          VIDEO_ID: ${{ github.event.inputs.videoID }}
