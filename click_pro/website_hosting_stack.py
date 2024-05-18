@@ -29,13 +29,13 @@ class WebsiteHostingStack(Stack):
                 principals=[iam.AnyPrincipal()]
             )
         )
-        #
-        # # Deploy website contents to S3 bucket
-        # s3deploy.BucketDeployment(self, "DeployWebsite",
-        #     sources=[s3deploy.Source.asset("./website")],
-        #     destination_bucket=website_bucket,
-        # )
-        #
+
+        # Deploy website contents to S3 bucket
+        s3deploy.BucketDeployment(self, "DeployWebsite",
+            sources=[s3deploy.Source.asset("./website")],
+            destination_bucket=website_bucket,
+        )
+
         # # Output the website URL
         # cdk.CfnOutput(self, "WebsiteURL",
         #     value=website_bucket.bucket_website_url
