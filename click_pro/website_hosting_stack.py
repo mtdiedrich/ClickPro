@@ -1,6 +1,7 @@
 from aws_cdk import (
     aws_s3 as s3,
     aws_s3_deployment as s3deploy,
+    aws_iam as iam,
     Stack,
 )
 from constructs import Construct
@@ -22,11 +23,10 @@ class WebsiteHostingStack(Stack):
 
         # Define bucket policy to allow public read access
         website_bucket.add_to_resource_policy(
-            s3.BucketPolicyStatement(
-                effect=s3.BucketPolicyEffect.ALLOW,
-                principals=[s3.ArnPrincipal('*')],
+            iam.PolicyStatement(
                 actions=["s3:GetObject"],
-                resources=[f"{website_bucket.bucket_arn}/*"]
+                resources=[f"{website_bucket.bucket_arn}/*"],
+                principals=[iam.AnyPrincipal()]
             )
         )
 
