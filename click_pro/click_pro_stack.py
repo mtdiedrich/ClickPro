@@ -2,12 +2,11 @@ from aws_cdk import (
     aws_lambda as lambda_,
     aws_apigateway as apigateway,
     aws_s3 as s3,
-    aws_lambda_python_alpha as lambda_python,
     Stack,
 )
+from aws_cdk.aws_lambda_python_alpha import PythonFunction
 from constructs import Construct
 import os
-
 
 class ClickProStack(Stack):
 
@@ -20,16 +19,13 @@ class ClickProStack(Stack):
         # Create S3 bucket for credentials
         bucket = s3.Bucket(self, "ephemeral-z90d7fs9dfwq")
 
-        # Define Lambda function with bundling
-        thumbnail_switcher_lambda = lambda_python.PythonFunction(
+        # Define Lambda function with automatic bundling
+        thumbnail_switcher_lambda = PythonFunction(
             self, "ThumbnailSwitcherFunction",
             entry="lambda",  # The directory where your handler.py and requirements.txt are
             runtime=lambda_.Runtime.PYTHON_3_9,
             index="handler.py",  # The file containing the handler function
             handler="lambda_handler",
-            bundling={
-                "pip": True,  # Use Docker to install dependencies with pip
-            },
             environment={
                 "S3_BUCKET_NAME": bucket.bucket_name,
                 "S3_OBJECT_KEY": "cred.json",
@@ -42,9 +38,9 @@ class ClickProStack(Stack):
 
         # Define API Gateway
         api = apigateway.RestApi(self, "thumbnail-switcher-api",
-                                 rest_api_name="Thumbnail Switcher Service",
-                                 description="This service switches YouTube thumbnails."
-                                 )
+            rest_api_name="Thumbnail Switcher Service",
+            description="This service switches YouTube thumbnails."
+        )
 
         thumbnail_resource = api.root.add_resource("thumbnail")
         thumbnail_resource.add_method("POST", apigateway.LambdaIntegration(thumbnail_switcher_lambda),
