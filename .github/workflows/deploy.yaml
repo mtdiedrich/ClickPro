@@ -30,18 +30,13 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Lambda dependencies
+      - name: Install Lambda dependencies and package
         run: |
-          cd lambda
-          python -m venv venv
-          source venv/bin/activate
-          pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client boto3
-          mkdir -p package
-          pip install --target ./package google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client boto3
-          cp handler.py ./package
-          cd package
-          zip -r ../lambda_package.zip .
-          cd ../..
+          python -m venv lambda/venv
+          . lambda/venv/bin/activate
+          pip install --target lambda/package -r lambda/requirements.txt
+          cp lambda/handler.py lambda/package/
+          zip -r lambda/lambda_package.zip lambda/package/*
           deactivate
 
       - name: Install dependencies
